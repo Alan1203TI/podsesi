@@ -5,7 +5,9 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } f
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app, `gs://${firebaseConfig.storageBucket}`);
+// Usa o bucket configurado no firebase-config.js automaticamente.
+// Não forçamos gs:// aqui para evitar erro de bucket/CORS em projetos novos do Firebase.
+const storage = getStorage(app);
 
 const EPISODES_COLLECTION = 'episodios';
 let episodes = [];
@@ -98,11 +100,15 @@ function uploadFile(file, path, label = 'Arquivo') {
   return new Promise((resolve, reject) => {
     $('uploadStatus').textContent = `${label}: iniciando envio...`;
     const storageRef = ref(storage, path);
-    const task = uploadBytesResumable(storageRef, file, { contentType: file.type || 'application/octet-stream' });
+    const metadata = {
+      contentType: file.type || (path.toLowerCase().endsWith('.mp3') ? 'audio/mpeg' : 'application/octet-stream'),
+      cacheControl: 'public,max-age=3600'
+    };
+    const task = uploadBytesResumable(storageRef, file, metadata);
 
     const watchdog = setTimeout(() => {
       if (task.snapshot.bytesTransferred === 0) {
-        $('uploadStatus').textContent = `${label}: ainda em 0%. Confira se o Storage está ativado e se as regras foram publicadas.`;
+        $('uploadStatus').textContent = `${label}: ainda em 0%. O Firebase Storage pode não estar criado/ativado ou as regras do Storage não foram publicadas.`;
       }
     }, 10000);
 
@@ -160,7 +166,9 @@ async function deleteEpisode(id) {
 function firebaseErrorMessage(err) {
   const code = err?.code || '';
   if (code.includes('permission-denied')) return 'sem permissão no Firestore. Publique as regras do arquivo REGRAS-FIRESTORE.txt.';
-  if (code.includes('unauthorized')) return 'sem permissão no Storage. Publique as regras do arquivo REGRAS-STORAGE.txt.';
+  if (code.includes('unauthorized')) return 'sem permissão no Storage. Publique as regras do arquivo REGRAS-STORAGE.txt em Storage > Regras.';
+  if (code.includes('object-not-found')) return 'arquivo não encontrado no Storage.';
+  if (code.includes('storage/unknown')) return 'falha no Storage. Verifique se o Storage foi criado em Firebase > Storage > Arquivos e publique as regras.';
   if (code.includes('bucket-not-found')) return 'bucket do Storage não encontrado. Confira o storageBucket no firebase-config.js.';
   if (code.includes('canceled')) return 'upload cancelado.';
   if (code.includes('quota')) return 'limite/cota do Firebase Storage atingido.';

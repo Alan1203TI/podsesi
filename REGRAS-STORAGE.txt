@@ -1,6 +1,4 @@
-REGRAS DO STORAGE
-
-Cole em: Firebase Console > Storage > Regras
+Cole em Firebase > Storage > Regras e clique em Publicar:
 
 rules_version = '2';
 

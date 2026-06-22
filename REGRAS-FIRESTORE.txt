@@ -1,12 +1,10 @@
-REGRAS DO FIRESTORE
-
-Cole em: Firebase Console > Firestore Database > Regras
+Cole em Firebase > Firestore Database > Regras e clique em Publicar:
 
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /episodios/{document=**} {
+    match /episodios/{episodio=**} {
       allow read: if true;
       allow write: if true;
     }
