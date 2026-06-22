@@ -5,6 +5,9 @@ import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, i
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const CATEGORIES_COLLECTION = 'categorias';
+const EPISODES_COLLECTION = 'episodios';
+
 const state = { categories: [], episodes: [], filtered: [], selectedCategory: 'Todos', currentIndex: -1 };
 const els = {
   tabs: document.getElementById('categoryTabs'), grid: document.getElementById('episodesGrid'), empty: document.getElementById('emptyState'), search: document.getElementById('searchInput'),
@@ -12,8 +15,8 @@ const els = {
   play: document.getElementById('playPauseBtn'), prev: document.getElementById('prevBtn'), next: document.getElementById('nextBtn'), progress: document.getElementById('progress'), current: document.getElementById('currentTime'), duration: document.getElementById('duration')
 };
 
-onSnapshot(query(collection(db, 'categories'), orderBy('name')), snap => { state.categories = snap.docs.map(d => ({ id:d.id, ...d.data() })); renderTabs(); });
-onSnapshot(query(collection(db, 'episodes'), orderBy('createdAt', 'desc')), snap => { state.episodes = snap.docs.map(d => ({ id:d.id, ...d.data() })); applyFilters(); });
+onSnapshot(query(collection(db, CATEGORIES_COLLECTION), orderBy('name')), snap => { state.categories = snap.docs.map(d => ({ id:d.id, ...d.data() })); renderTabs(); });
+onSnapshot(query(collection(db, EPISODES_COLLECTION), orderBy('createdAt', 'desc')), snap => { state.episodes = snap.docs.map(d => ({ id:d.id, ...d.data() })); applyFilters(); });
 
 function renderTabs(){
   const all = ['Todos', ...state.categories.map(c => c.name)];
@@ -47,7 +50,7 @@ async function playEpisode(index){
   state.currentIndex = index;
   els.bar.classList.remove('hidden'); els.cover.src = ep.coverUrl || './assets/logo-podsesi.png'; els.title.textContent = ep.title || 'Episódio'; els.cat.textContent = ep.category || 'PODSESI';
   els.audio.src = ep.audioUrl; await els.audio.play().catch(()=>{}); els.play.textContent = '⏸';
-  updateDoc(doc(db, 'episodes', ep.id), { plays: increment(1) }).catch(()=>{});
+  updateDoc(doc(db, EPISODES_COLLECTION, ep.id), { plays: increment(1) }).catch(()=>{});
 }
 function playAdjacent(step){ if(!state.filtered.length) return; const next = state.currentIndex < 0 ? 0 : (state.currentIndex + step + state.filtered.length) % state.filtered.length; playEpisode(next); }
 els.search.addEventListener('input', applyFilters); els.play.onclick = () => { if(els.audio.paused){ els.audio.play(); els.play.textContent='⏸'; } else { els.audio.pause(); els.play.textContent='▶'; } }; els.prev.onclick=()=>playAdjacent(-1); els.next.onclick=()=>playAdjacent(1); els.audio.onended=()=>playAdjacent(1);

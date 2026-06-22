@@ -1,4 +1,4 @@
-REGRAS DO FIREBASE STORAGE
+REGRAS DO STORAGE
 
 Cole em: Firebase Console > Storage > Regras
 

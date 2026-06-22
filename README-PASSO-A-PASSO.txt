@@ -30,11 +30,11 @@ Cole em Firestore Database > Regras:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /categories/{id} {
+    match /categorias/{id} {
       allow read: if true;
       allow write: if true;
     }
-    match /episodes/{id} {
+    match /episodios/{id} {
       allow read: if true;
       allow write: if true;
     }
