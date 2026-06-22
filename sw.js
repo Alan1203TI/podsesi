@@ -1,1 +1,0 @@
-{"name":"PODSESI Player","short_name":"PODSESI","start_url":"index.html","display":"standalone","background_color":"#03101f","theme_color":"#06499b","icons":[{"src":"assets/podsesi-card.jpeg","sizes":"192x192","type":"image/jpeg"}]}
