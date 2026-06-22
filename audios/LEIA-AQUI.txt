@@ -1,0 +1,7 @@
+Coloque nesta pasta os arquivos de áudio dos episódios.
+
+Exemplo:
+dani-professora.mp3
+
+Depois, no Painel Admin, informe o nome do arquivo:
+dani-professora.mp3

@@ -1,0 +1,7 @@
+Coloque nesta pasta as capas dos episódios.
+
+Exemplo:
+dani-professora.jpg
+
+Depois, no Painel Admin, informe o nome do arquivo:
+dani-professora.jpg
