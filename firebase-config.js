@@ -1,5 +1,4 @@
-// firebase-config.js
-// Configuração Firebase do projeto PODSESI 2026
+// PODSESI Player - Configuração do Firebase
 
 export const firebaseConfig = {
   apiKey: "AIzaSyAXGS1MxNPkL-4BU1VO4esMBiYhOQ_Pq0g",
@@ -11,5 +10,5 @@ export const firebaseConfig = {
 };
 
 // Senha simples do painel administrativo.
-// Depois, se quiser, podemos trocar por login com Firebase Authentication.
+// Depois podemos trocar por Firebase Authentication.
 export const ADMIN_PASSWORD = "podsesi2026";

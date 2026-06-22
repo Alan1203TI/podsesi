@@ -17,7 +17,7 @@ onSnapshot(query(collection(db, 'episodes'), orderBy('createdAt', 'desc')), snap
 
 function renderTabs(){
   const all = ['Todos', ...state.categories.map(c => c.name)];
-  els.tabs.innerHTML = all.map(name => `<button class="tab ${name===state.selectedCategory?'active':''}" data-cat="${escapeHtml(name)}">${escapeHtml(name)}</button>`).join('');
+  els.tabs.innerHTML = all.map(name => `<button class="cat-card ${name===state.selectedCategory?'active':''}" data-cat="${escapeHtml(name)}"><span class="ico">${iconFor(name)}</span>${escapeHtml(name)}</button>`).join('');
   els.tabs.querySelectorAll('button').forEach(btn => btn.onclick = () => { state.selectedCategory = btn.dataset.cat; renderTabs(); applyFilters(); });
 }
 function applyFilters(){
@@ -33,11 +33,11 @@ function renderEpisodes(){
   els.empty.classList.toggle('hidden', state.filtered.length > 0);
   els.grid.innerHTML = state.filtered.map((ep, idx) => `
     <article class="episode-card" data-index="${idx}">
-      <img src="${ep.coverUrl || 'assets/logo-podsesi.jpeg'}" alt="${escapeHtml(ep.title||'Episódio')}" />
+      <img src="${ep.coverUrl || 'assets/logo-podsesi.png'}" alt="${escapeHtml(ep.title||'Episódio')}" />
       <h3>${escapeHtml(ep.title || 'Sem título')}</h3>
       <p>${escapeHtml(ep.description || 'Episódio do PODSESI.')}</p>
       <span class="badge">${escapeHtml(ep.category || 'PODSESI')}</span>
-      <button class="play-pill">▶ Ouvir</button>
+      <button class="play-pill">▶</button>
     </article>
   `).join('');
   els.grid.querySelectorAll('.episode-card').forEach(card => card.onclick = () => playEpisode(Number(card.dataset.index)));
@@ -45,7 +45,7 @@ function renderEpisodes(){
 async function playEpisode(index){
   const ep = state.filtered[index]; if(!ep?.audioUrl) return;
   state.currentIndex = index;
-  els.bar.classList.remove('hidden'); els.cover.src = ep.coverUrl || 'assets/logo-podsesi.jpeg'; els.title.textContent = ep.title || 'Episódio'; els.cat.textContent = ep.category || 'PODSESI';
+  els.bar.classList.remove('hidden'); els.cover.src = ep.coverUrl || 'assets/logo-podsesi.png'; els.title.textContent = ep.title || 'Episódio'; els.cat.textContent = ep.category || 'PODSESI';
   els.audio.src = ep.audioUrl; await els.audio.play().catch(()=>{}); els.play.textContent = '⏸';
   updateDoc(doc(db, 'episodes', ep.id), { plays: increment(1) }).catch(()=>{});
 }
@@ -55,3 +55,5 @@ els.audio.ontimeupdate = () => { if(!els.audio.duration) return; els.progress.va
 els.progress.oninput = () => { if(els.audio.duration) els.audio.currentTime = (Number(els.progress.value)/100)*els.audio.duration; };
 function fmt(sec){ sec=Math.floor(sec||0); return `${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`; }
 function escapeHtml(s){ return String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+
+function iconFor(name){ const n=String(name||'').toLowerCase(); if(n.includes('rob')) return '🤖'; if(n.includes('bibli')) return '📚'; if(n.includes('prof')) return '👩‍🏫'; if(n.includes('evento')) return '📅'; if(n.includes('entrevista')) return '🎙️'; if(n.includes('todos')) return '⭐'; return '🎧'; }
