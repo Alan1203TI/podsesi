@@ -1,71 +1,60 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#06499b" />
-  <title>PODSESI | A voz da nossa escola</title>
-  <link rel="manifest" href="manifest.webmanifest" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>PODSESI Player</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand"><span class="logo-dot">▶</span><div><strong>PODSESI</strong><small>A voz da nossa escola</small></div></div>
-      <nav>
-        <button class="nav-btn active" data-filter="todos">Início</button>
-        <button class="nav-btn" data-filter="Podcast">Podcast</button>
-        <button class="nav-btn" data-filter="Robótica">Robótica</button>
-        <button class="nav-btn" data-filter="Biblioteca">Biblioteca</button>
-        <button class="nav-btn" data-filter="Eventos">Eventos</button>
-        <button class="nav-btn" data-filter="Professores">Professores</button>
-      </nav>
-      <a class="admin-link" href="admin.html">Área administrativa</a>
+<body class="app-body">
+  <div class="bg-photo"></div>
+  <main class="tablet-shell">
+    <aside class="brand-panel">
+      <img src="assets/logo-podsesi.jpeg" alt="PODSESI" class="brand-logo" />
+      <h1>PODSESI</h1>
+      <p>A voz da nossa escola</p>
+      <span>SESI Dom Bosco • São João del Rei</span>
+      <a class="admin-link" href="admin.html">Painel Admin</a>
     </aside>
 
-    <main class="content">
-      <section class="hero">
-        <div class="hero-bg"></div>
-        <div class="hero-content">
-          <img src="assets/podsesi-card.jpeg" alt="Capa PODSESI" class="hero-cover" />
-          <div class="hero-text">
-            <span class="eyebrow">SESI Dom Bosco • São João del Rei</span>
-            <h1>PODSESI</h1>
-            <p>Selecione um episódio, conecte o headset ao tablet e escute as gravações produzidas pela nossa escola.</p>
-            <div class="hero-actions">
-              <button id="playFirst" class="primary">▶ Ouvir agora</button>
-              <button id="installBtn" class="ghost" hidden>Instalar no tablet</button>
-            </div>
-          </div>
+    <section class="content-panel">
+      <header class="topbar">
+        <div>
+          <h2>Escolha um episódio</h2>
+          <p>Conecte o headset no tablet e aperte play.</p>
         </div>
-      </section>
+        <input id="searchInput" class="search" type="search" placeholder="Buscar episódio..." />
+      </header>
 
-      <section class="toolbar">
-        <input id="searchInput" type="search" placeholder="Buscar episódio, tema ou categoria..." />
-        <select id="sortSelect" aria-label="Ordenar episódios">
-          <option value="recentes">Mais recentes</option>
-          <option value="titulo">Título</option>
-        </select>
-      </section>
+      <nav id="categoryTabs" class="category-tabs"></nav>
 
-      <section>
-        <div class="section-title"><h2>Episódios</h2><span id="counter">0 episódios</span></div>
-        <div id="episodesGrid" class="episodes-grid"></div>
-      </section>
-    </main>
-  </div>
+      <section id="episodesGrid" class="episodes-grid"></section>
+      <div id="emptyState" class="empty-state hidden">
+        <h3>Nenhum episódio encontrado</h3>
+        <p>Cadastre episódios no painel administrativo.</p>
+      </div>
+    </section>
+  </main>
 
-  <footer class="player-bar" id="playerBar">
-    <img id="playerCover" src="assets/podsesi-card.jpeg" alt="Capa do episódio" />
-    <div class="now-playing"><strong id="playerTitle">Escolha um episódio</strong><small id="playerMeta">PODSESI</small></div>
-    <button id="prevBtn" class="circle">⏮</button>
-    <button id="playPauseBtn" class="circle big">▶</button>
-    <button id="nextBtn" class="circle">⏭</button>
-    <audio id="audioPlayer" controls preload="metadata"></audio>
+  <footer id="playerBar" class="player-bar hidden">
+    <img id="playerCover" src="assets/logo-podsesi.jpeg" alt="Capa" />
+    <div class="player-info">
+      <strong id="playerTitle">Selecione um episódio</strong>
+      <span id="playerCategory">PODSESI</span>
+      <div class="progress-line">
+        <span id="currentTime">00:00</span>
+        <input id="progress" type="range" min="0" max="100" value="0" />
+        <span id="duration">00:00</span>
+      </div>
+    </div>
+    <div class="player-actions">
+      <button id="prevBtn" aria-label="Anterior">⏮</button>
+      <button id="playPauseBtn" class="main-play" aria-label="Tocar">▶</button>
+      <button id="nextBtn" aria-label="Próximo">⏭</button>
+    </div>
+    <audio id="audioPlayer"></audio>
   </footer>
 
-  <script type="module" src="firebase-config.js"></script>
-  <script src="episodios.js"></script>
   <script type="module" src="app.js"></script>
 </body>
 </html>

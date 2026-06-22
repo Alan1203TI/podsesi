@@ -1,43 +1,65 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin PODSESI</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>PODSESI Admin</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="admin-page">
-  <main class="admin-card">
-    <div class="brand admin-brand"><span class="logo-dot">▶</span><div><strong>PODSESI Admin</strong><small>Cadastro de episódios</small></div></div>
-    <div id="loginBox">
-      <p>Digite a senha administrativa para liberar o cadastro.</p>
-      <input id="passwordInput" type="password" placeholder="Senha" />
-      <button id="loginBtn" class="primary full">Entrar</button>
-      <small>Senha padrão: <b>podsesi2026</b>. Altere no arquivo <b>admin.js</b>.</small>
-    </div>
+<body class="admin-body">
+  <div class="bg-photo"></div>
 
-    <form id="episodeForm" hidden>
-      <label>Título do episódio<input id="titulo" required placeholder="Ex: Episódio 01 - Robótica" /></label>
-      <label>Descrição<textarea id="descricao" required placeholder="Resumo do áudio"></textarea></label>
-      <label>Categoria
-        <select id="categoria">
-          <option>Podcast</option><option>Robótica</option><option>Biblioteca</option><option>Eventos</option><option>Professores</option><option>Entrevista</option>
-        </select>
-      </label>
-      <label>Arquivo MP3<input id="audioFile" type="file" accept="audio/*" /></label>
-      <label>Capa do episódio<input id="coverFile" type="file" accept="image/*" /></label>
-      <div class="hint">Com Firebase configurado, o upload vai para a nuvem. Sem Firebase, use o gerador local abaixo para copiar no arquivo <b>episodios.js</b>.</div>
-      <button class="primary full" type="submit">Salvar episódio</button>
-    </form>
+  <section id="loginScreen" class="login-card">
+    <img src="assets/logo-podsesi.jpeg" alt="PODSESI" />
+    <h1>Painel PODSESI</h1>
+    <p>Gerencie categorias e episódios.</p>
+    <input id="passwordInput" type="password" placeholder="Senha do administrador" />
+    <button id="loginBtn">Entrar</button>
+    <small>Senha padrão: podsesi2026</small>
+  </section>
 
-    <section id="localGenerator" hidden>
-      <h3>Gerador local para GitHub Pages sem Firebase</h3>
-      <p>Coloque o MP3 em <b>uploads/audios</b>, a capa em <b>uploads/capas</b> e copie o bloco abaixo para o arquivo <b>episodios.js</b>.</p>
-      <textarea id="generatedCode" readonly></textarea>
+  <main id="adminApp" class="admin-shell hidden">
+    <header class="admin-header">
+      <div>
+        <h1>Painel Administrativo</h1>
+        <p>Categorias, capas e áudios do PODSESI.</p>
+      </div>
+      <div class="header-actions">
+        <a href="index.html">Ver tela dos alunos</a>
+        <button id="logoutBtn">Sair</button>
+      </div>
+    </header>
+
+    <section class="admin-grid">
+      <div class="admin-card">
+        <h2>Categorias</h2>
+        <div class="inline-form">
+          <input id="categoryName" placeholder="Ex.: Robótica" />
+          <button id="addCategoryBtn">Criar</button>
+        </div>
+        <div id="categoriesList" class="manage-list"></div>
+      </div>
+
+      <div class="admin-card">
+        <h2>Novo episódio</h2>
+        <form id="episodeForm" class="episode-form">
+          <label>Título<input id="title" required placeholder="Nome do episódio" /></label>
+          <label>Descrição<textarea id="description" rows="3" placeholder="Resumo do áudio"></textarea></label>
+          <label>Categoria<select id="categorySelect" required></select></label>
+          <label>Capa do episódio<input id="coverFile" type="file" accept="image/*" /></label>
+          <label>Arquivo MP3/Áudio<input id="audioFile" type="file" accept="audio/*" required /></label>
+          <button id="saveEpisodeBtn" type="submit">Enviar episódio</button>
+          <div id="uploadStatus" class="upload-status"></div>
+        </form>
+      </div>
     </section>
-    <a href="index.html" class="admin-link back">Voltar ao player</a>
+
+    <section class="admin-card episodes-admin-card">
+      <h2>Episódios cadastrados</h2>
+      <div id="episodesList" class="manage-list episodes-manage"></div>
+    </section>
   </main>
-  <script type="module" src="firebase-config.js"></script>
+
   <script type="module" src="admin.js"></script>
 </body>
 </html>
