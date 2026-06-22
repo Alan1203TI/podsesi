@@ -9,6 +9,4 @@ export const firebaseConfig = {
   appId: "1:663234484955:web:540f776565468a46780afe"
 };
 
-// Senha simples do painel administrativo.
-// Depois podemos trocar por Firebase Authentication.
 export const ADMIN_PASSWORD = "podsesi2026";

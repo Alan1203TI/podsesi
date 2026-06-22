@@ -1,12 +1,16 @@
+REGRAS DO FIRESTORE
+
+Cole em: Firebase Console > Firestore Database > Regras
+
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /episodes/{episodio} {
+    match /categories/{document=**} {
       allow read: if true;
       allow write: if true;
     }
-    match /categories/{categoria} {
+    match /episodes/{document=**} {
       allow read: if true;
       allow write: if true;
     }

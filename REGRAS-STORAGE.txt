@@ -1,12 +1,12 @@
+REGRAS DO FIREBASE STORAGE
+
+Cole em: Firebase Console > Storage > Regras
+
 rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    match /covers/{allPaths=**} {
-      allow read: if true;
-      allow write: if true;
-    }
-    match /audios/{allPaths=**} {
+    match /{allPaths=**} {
       allow read: if true;
       allow write: if true;
     }
