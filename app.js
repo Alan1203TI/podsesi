@@ -5,58 +5,119 @@ import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, i
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const CATEGORIES_COLLECTION = 'categorias';
 const EPISODES_COLLECTION = 'episodios';
+const state = { episodes: [], filtered: [], currentIndex: -1 };
 
-const state = { categories: [], episodes: [], filtered: [], selectedCategory: 'Todos', currentIndex: -1 };
 const els = {
-  tabs: document.getElementById('categoryTabs'), grid: document.getElementById('episodesGrid'), empty: document.getElementById('emptyState'), search: document.getElementById('searchInput'),
-  bar: document.getElementById('playerBar'), cover: document.getElementById('playerCover'), title: document.getElementById('playerTitle'), cat: document.getElementById('playerCategory'), audio: document.getElementById('audioPlayer'),
-  play: document.getElementById('playPauseBtn'), prev: document.getElementById('prevBtn'), next: document.getElementById('nextBtn'), progress: document.getElementById('progress'), current: document.getElementById('currentTime'), duration: document.getElementById('duration')
+  grid: document.getElementById('episodesGrid'),
+  empty: document.getElementById('emptyState'),
+  search: document.getElementById('searchInput'),
+  bar: document.getElementById('playerBar'),
+  cover: document.getElementById('playerCover'),
+  title: document.getElementById('playerTitle'),
+  cat: document.getElementById('playerCategory'),
+  audio: document.getElementById('audioPlayer'),
+  play: document.getElementById('playPauseBtn'),
+  prev: document.getElementById('prevBtn'),
+  next: document.getElementById('nextBtn'),
+  progress: document.getElementById('progress'),
+  current: document.getElementById('currentTime'),
+  duration: document.getElementById('duration')
 };
 
-onSnapshot(query(collection(db, CATEGORIES_COLLECTION), orderBy('name')), snap => { state.categories = snap.docs.map(d => ({ id:d.id, ...d.data() })); renderTabs(); });
-onSnapshot(query(collection(db, EPISODES_COLLECTION), orderBy('createdAt', 'desc')), snap => { state.episodes = snap.docs.map(d => ({ id:d.id, ...d.data() })); applyFilters(); });
+onSnapshot(
+  query(collection(db, EPISODES_COLLECTION), orderBy('createdAt', 'desc')),
+  snap => {
+    state.episodes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    applyFilters();
+  },
+  err => {
+    console.error(err);
+    els.empty.classList.remove('hidden');
+    els.empty.innerHTML = '<h3>Erro ao carregar episódios</h3><p>Confira as regras do Firestore e a configuração do Firebase.</p>';
+  }
+);
 
-function renderTabs(){
-  const all = ['Todos', ...state.categories.map(c => c.name)];
-  els.tabs.innerHTML = all.map(name => `<button class="cat-card ${name===state.selectedCategory?'active':''}" data-cat="${escapeHtml(name)}"><span class="ico">${iconFor(name)}</span>${escapeHtml(name)}</button>`).join('');
-  els.tabs.querySelectorAll('button').forEach(btn => btn.onclick = () => { state.selectedCategory = btn.dataset.cat; renderTabs(); applyFilters(); });
-}
-function applyFilters(){
+function applyFilters() {
   const term = els.search.value.trim().toLowerCase();
   state.filtered = state.episodes.filter(ep => {
-    const catOk = state.selectedCategory === 'Todos' || ep.category === state.selectedCategory;
-    const text = `${ep.title||''} ${ep.description||''} ${ep.category||''}`.toLowerCase();
-    return catOk && (!term || text.includes(term));
+    const text = `${ep.title || ''} ${ep.description || ''}`.toLowerCase();
+    return !term || text.includes(term);
   });
   renderEpisodes();
 }
-function renderEpisodes(){
+
+function renderEpisodes() {
   els.empty.classList.toggle('hidden', state.filtered.length > 0);
   els.grid.innerHTML = state.filtered.map((ep, idx) => `
     <article class="episode-card" data-index="${idx}">
-      <img src="${ep.coverUrl || './assets/logo-podsesi.png'}" onerror="this.onerror=null;this.src='./logo-podsesi.png';" alt="${escapeHtml(ep.title||'Episódio')}" />
+      <img src="${ep.coverUrl || './assets/logo-podsesi.png'}" onerror="this.onerror=null;this.src='./logo-podsesi.png';" alt="${escapeHtml(ep.title || 'Episódio')}" />
       <h3>${escapeHtml(ep.title || 'Sem título')}</h3>
       <p>${escapeHtml(ep.description || 'Episódio do PODSESI.')}</p>
-      <span class="badge">${escapeHtml(ep.category || 'PODSESI')}</span>
+      <span class="badge">PODSESI</span>
       <button class="play-pill">▶</button>
     </article>
   `).join('');
-  els.grid.querySelectorAll('.episode-card').forEach(card => card.onclick = () => playEpisode(Number(card.dataset.index)));
-}
-async function playEpisode(index){
-  const ep = state.filtered[index]; if(!ep?.audioUrl) return;
-  state.currentIndex = index;
-  els.bar.classList.remove('hidden'); els.cover.src = ep.coverUrl || './assets/logo-podsesi.png'; els.title.textContent = ep.title || 'Episódio'; els.cat.textContent = ep.category || 'PODSESI';
-  els.audio.src = ep.audioUrl; await els.audio.play().catch(()=>{}); els.play.textContent = '⏸';
-  updateDoc(doc(db, EPISODES_COLLECTION, ep.id), { plays: increment(1) }).catch(()=>{});
-}
-function playAdjacent(step){ if(!state.filtered.length) return; const next = state.currentIndex < 0 ? 0 : (state.currentIndex + step + state.filtered.length) % state.filtered.length; playEpisode(next); }
-els.search.addEventListener('input', applyFilters); els.play.onclick = () => { if(els.audio.paused){ els.audio.play(); els.play.textContent='⏸'; } else { els.audio.pause(); els.play.textContent='▶'; } }; els.prev.onclick=()=>playAdjacent(-1); els.next.onclick=()=>playAdjacent(1); els.audio.onended=()=>playAdjacent(1);
-els.audio.ontimeupdate = () => { if(!els.audio.duration) return; els.progress.value = (els.audio.currentTime / els.audio.duration) * 100; els.current.textContent = fmt(els.audio.currentTime); els.duration.textContent = fmt(els.audio.duration); };
-els.progress.oninput = () => { if(els.audio.duration) els.audio.currentTime = (Number(els.progress.value)/100)*els.audio.duration; };
-function fmt(sec){ sec=Math.floor(sec||0); return `${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`; }
-function escapeHtml(s){ return String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
 
-function iconFor(name){ const n=String(name||'').toLowerCase(); if(n.includes('rob')) return '🤖'; if(n.includes('bibli')) return '📚'; if(n.includes('prof')) return '👩‍🏫'; if(n.includes('evento')) return '📅'; if(n.includes('entrevista')) return '🎙️'; if(n.includes('todos')) return '⭐'; return '🎧'; }
+  els.grid.querySelectorAll('.episode-card').forEach(card => {
+    card.onclick = () => playEpisode(Number(card.dataset.index));
+  });
+}
+
+async function playEpisode(index) {
+  const ep = state.filtered[index];
+  if (!ep?.audioUrl) return;
+
+  state.currentIndex = index;
+  els.bar.classList.remove('hidden');
+  els.cover.src = ep.coverUrl || './assets/logo-podsesi.png';
+  els.title.textContent = ep.title || 'Episódio';
+  els.cat.textContent = 'PODSESI';
+  els.audio.src = ep.audioUrl;
+
+  await els.audio.play().catch(() => {});
+  els.play.textContent = '⏸';
+  updateDoc(doc(db, EPISODES_COLLECTION, ep.id), { plays: increment(1) }).catch(() => {});
+}
+
+function playAdjacent(step) {
+  if (!state.filtered.length) return;
+  const next = state.currentIndex < 0 ? 0 : (state.currentIndex + step + state.filtered.length) % state.filtered.length;
+  playEpisode(next);
+}
+
+els.search.addEventListener('input', applyFilters);
+els.play.onclick = () => {
+  if (els.audio.paused) {
+    els.audio.play();
+    els.play.textContent = '⏸';
+  } else {
+    els.audio.pause();
+    els.play.textContent = '▶';
+  }
+};
+els.prev.onclick = () => playAdjacent(-1);
+els.next.onclick = () => playAdjacent(1);
+els.audio.onended = () => playAdjacent(1);
+
+els.audio.ontimeupdate = () => {
+  if (!els.audio.duration) return;
+  els.progress.value = (els.audio.currentTime / els.audio.duration) * 100;
+  els.current.textContent = fmt(els.audio.currentTime);
+  els.duration.textContent = fmt(els.audio.duration);
+};
+
+els.progress.oninput = () => {
+  if (els.audio.duration) els.audio.currentTime = (Number(els.progress.value) / 100) * els.audio.duration;
+};
+
+function fmt(sec) {
+  sec = Math.floor(sec || 0);
+  return `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>'"]/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+  }[c]));
+}

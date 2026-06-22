@@ -23,3 +23,14 @@
   filter:drop-shadow(0 14px 24px rgba(0,0,0,.32));
 }
 .login-card small{display:none!important;}
+
+/* Ajustes versão sem categorias */
+.no-categories-layout .hero-area{min-height:350px;}
+.no-category-title{margin-top:34px;}
+.episodes-row-large{grid-template-columns:repeat(5,minmax(180px,1fr));}
+.single-admin-grid{grid-template-columns:1fr;max-width:760px;}
+.admin-help-text{color:var(--muted);margin-top:-6px;}
+.empty-admin{color:var(--muted);padding:18px;border:1px dashed var(--line);border-radius:16px;text-align:center;}
+@media(max-width:1100px){.episodes-row-large{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.episodes-row-large{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.episodes-row-large{grid-template-columns:1fr}}

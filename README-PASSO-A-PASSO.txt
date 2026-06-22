@@ -1,76 +1,35 @@
-PODSESI PLAYER - PASSO A PASSO
+PODSESI - PASSO A PASSO
 
-1. CRIAR O PROJETO NO FIREBASE
-- Acesse console.firebase.google.com
-- Clique em Adicionar projeto
-- Nome sugerido: podsesi-player
+1) Suba todos os arquivos no GitHub.
 
-2. CRIAR APP WEB
-- Na visão geral do projeto, clique no ícone Web </>
-- Nome: PODSESI Player
-- Copie o firebaseConfig
+2) Ative o GitHub Pages:
+Settings > Pages > Deploy from branch > main > /root
 
-3. CONFIGURAR O ARQUIVO
-- Abra firebase-config.js
-- Substitua os dados de exemplo pelo firebaseConfig do seu projeto
-- Altere a senha do ADMIN_PASSWORD se desejar
+3) Firebase já configurado em firebase-config.js com:
+Projeto: podsesi2026
+Storage bucket: podsesi2026.firebasestorage.app
 
-4. ATIVAR FIRESTORE
-- Firebase > Firestore Database > Criar banco de dados
-- Comece em modo de teste
-- Localização sugerida: southamerica-east1
+4) Firestore:
+Firebase Console > Firestore Database > Regras
+Cole o conteúdo do arquivo REGRAS-FIRESTORE.txt
 
-5. ATIVAR STORAGE
-- Firebase > Storage > Primeiros passos
-- Comece em modo de teste
+5) Storage:
+Firebase Console > Storage > Regras
+Cole o conteúdo do arquivo REGRAS-STORAGE.txt
 
-6. REGRAS DO FIRESTORE
-Cole em Firestore Database > Regras:
+6) Tela dos alunos:
+Abra index.html pelo link do GitHub Pages.
+A tela possui apenas campo de busca e lista de episódios.
+Os episódios aparecem em ordem de cadastro, do mais recente para o mais antigo.
 
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /categorias/{id} {
-      allow read: if true;
-      allow write: if true;
-    }
-    match /episodios/{id} {
-      allow read: if true;
-      allow write: if true;
-    }
-  }
-}
+7) Painel administrativo:
+Abra admin.html pelo link do GitHub Pages.
+Senha padrão: podsesi2026
 
-7. REGRAS DO STORAGE
-Cole em Storage > Regras:
+8) No painel você pode:
+- cadastrar episódio;
+- enviar capa;
+- enviar MP3/áudio;
+- excluir episódio.
 
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /episodios/{allPaths=**} {
-      allow read: if true;
-      allow write: if true;
-    }
-  }
-}
-
-8. SUBIR NO GITHUB
-- Crie um repositório vazio
-- Envie todos os arquivos desta pasta
-- Vá em Settings > Pages
-- Source: Deploy from a branch
-- Branch: main
-- Pasta: /root
-
-9. ACESSOS
-Tela dos alunos:
-https://SEU_USUARIO.github.io/NOME_DO_REPOSITORIO/
-
-Painel admin:
-https://SEU_USUARIO.github.io/NOME_DO_REPOSITORIO/admin.html
-
-Senha padrão:
-podsesi2026
-
-OBSERVAÇÃO IMPORTANTE
-As regras acima ficam abertas para teste. Depois que tudo estiver funcionando, o ideal é trocar por login com Firebase Authentication para proteger melhor o painel administrativo.
+As categorias foram removidas desta versão.

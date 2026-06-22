@@ -12,7 +12,7 @@
   <section id="loginScreen" class="login-card">
     <img class="admin-logo" src="assets/logo-podsesi.png" alt="PODSESI" onerror="this.onerror=null;this.src='logo-podsesi.png';" />
     <h1>Painel PODSESI</h1>
-    <p>Gerencie categorias e episódios.</p>
+    <p>Gerencie os episódios do PODSESI.</p>
     <input id="passwordInput" type="password" placeholder="Senha do administrador" />
     <button id="loginBtn">Entrar</button>
   </section>
@@ -21,7 +21,7 @@
     <header class="admin-header">
       <div>
         <h1>Painel Administrativo</h1>
-        <p>Categorias, capas e áudios do PODSESI.</p>
+        <p>Cadastre, envie e exclua episódios do PODSESI.</p>
       </div>
       <div class="header-actions">
         <a href="index.html">Ver tela dos alunos</a>
@@ -29,22 +29,12 @@
       </div>
     </header>
 
-    <section class="admin-grid">
-      <div class="admin-card">
-        <h2>Categorias</h2>
-        <div class="inline-form">
-          <input id="categoryName" placeholder="Ex.: Robótica" />
-          <button id="addCategoryBtn">Criar</button>
-        </div>
-        <div id="categoriesList" class="manage-list"></div>
-      </div>
-
+    <section class="admin-grid single-admin-grid">
       <div class="admin-card">
         <h2>Novo episódio</h2>
         <form id="episodeForm" class="episode-form">
           <label>Título<input id="title" required placeholder="Nome do episódio" /></label>
           <label>Descrição<textarea id="description" rows="3" placeholder="Resumo do áudio"></textarea></label>
-          <label>Categoria<select id="categorySelect" required></select></label>
           <label>Capa do episódio<input id="coverFile" type="file" accept="image/*" /></label>
           <label>Arquivo MP3/Áudio<input id="audioFile" type="file" accept="audio/*" required /></label>
           <button id="saveEpisodeBtn" type="submit">Enviar episódio</button>
@@ -55,6 +45,7 @@
 
     <section class="admin-card episodes-admin-card">
       <h2>Episódios cadastrados</h2>
+      <p class="admin-help-text">Os episódios aparecem automaticamente na tela dos alunos em ordem de cadastro, do mais recente para o mais antigo.</p>
       <div id="episodesList" class="manage-list episodes-manage"></div>
     </section>
   </main>

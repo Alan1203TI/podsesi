@@ -6,12 +6,6 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    match /categorias/{document=**} {
-      allow read: if true;
-      allow write: if true;
-    }
-
     match /episodios/{document=**} {
       allow read: if true;
       allow write: if true;
