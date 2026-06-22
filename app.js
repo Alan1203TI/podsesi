@@ -33,7 +33,7 @@ function renderEpisodes(){
   els.empty.classList.toggle('hidden', state.filtered.length > 0);
   els.grid.innerHTML = state.filtered.map((ep, idx) => `
     <article class="episode-card" data-index="${idx}">
-      <img src="${ep.coverUrl || 'assets/logo-podsesi.png'}" alt="${escapeHtml(ep.title||'Episódio')}" />
+      <img src="${ep.coverUrl || './assets/logo-podsesi.png'}" onerror="this.onerror=null;this.src='./logo-podsesi.png';" alt="${escapeHtml(ep.title||'Episódio')}" />
       <h3>${escapeHtml(ep.title || 'Sem título')}</h3>
       <p>${escapeHtml(ep.description || 'Episódio do PODSESI.')}</p>
       <span class="badge">${escapeHtml(ep.category || 'PODSESI')}</span>
@@ -45,7 +45,7 @@ function renderEpisodes(){
 async function playEpisode(index){
   const ep = state.filtered[index]; if(!ep?.audioUrl) return;
   state.currentIndex = index;
-  els.bar.classList.remove('hidden'); els.cover.src = ep.coverUrl || 'assets/logo-podsesi.png'; els.title.textContent = ep.title || 'Episódio'; els.cat.textContent = ep.category || 'PODSESI';
+  els.bar.classList.remove('hidden'); els.cover.src = ep.coverUrl || './assets/logo-podsesi.png'; els.title.textContent = ep.title || 'Episódio'; els.cat.textContent = ep.category || 'PODSESI';
   els.audio.src = ep.audioUrl; await els.audio.play().catch(()=>{}); els.play.textContent = '⏸';
   updateDoc(doc(db, 'episodes', ep.id), { plays: increment(1) }).catch(()=>{});
 }
