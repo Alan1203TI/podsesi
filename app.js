@@ -51,7 +51,7 @@ function renderEpisodes() {
   els.empty.classList.toggle('hidden', state.filtered.length > 0);
   els.grid.innerHTML = state.filtered.map((ep, idx) => `
     <article class="episode-card" data-index="${idx}">
-      <img src="${ep.coverUrl || './assets/logo-podsesi.png'}" onerror="this.onerror=null;this.src='./logo-podsesi.png';" alt="${escapeHtml(ep.title || 'Episódio')}" />
+      <img src="${resolveCover(ep.coverUrl)}" onerror="this.onerror=null;this.src='logo-podsesi.png';" alt="${escapeHtml(ep.title || 'Episódio')}" />
       <h3>${escapeHtml(ep.title || 'Sem título')}</h3>
       <p>${escapeHtml(ep.description || 'Episódio do PODSESI.')}</p>
       <span class="badge">PODSESI</span>
@@ -67,13 +67,14 @@ function renderEpisodes() {
 async function playEpisode(index) {
   const ep = state.filtered[index];
   if (!ep?.audioUrl) return;
+  const audioSrc = resolveAudio(ep.audioUrl);
 
   state.currentIndex = index;
   els.bar.classList.remove('hidden');
-  els.cover.src = ep.coverUrl || './assets/logo-podsesi.png';
+  els.cover.src = resolveCover(ep.coverUrl);
   els.title.textContent = ep.title || 'Episódio';
   els.cat.textContent = 'PODSESI';
-  els.audio.src = ep.audioUrl;
+  els.audio.src = audioSrc;
 
   await els.audio.play().catch(() => {});
   els.play.textContent = '⏸';
@@ -110,6 +111,18 @@ els.audio.ontimeupdate = () => {
 els.progress.oninput = () => {
   if (els.audio.duration) els.audio.currentTime = (Number(els.progress.value) / 100) * els.audio.duration;
 };
+
+function resolveCover(value) {
+  if (!value) return 'logo-podsesi.png';
+  if (/^https?:\/\//i.test(value)) return value;
+  return value;
+}
+
+function resolveAudio(value) {
+  if (!value) return '';
+  if (/^https?:\/\//i.test(value)) return value;
+  return value;
+}
 
 function fmt(sec) {
   sec = Math.floor(sec || 0);

@@ -10,7 +10,7 @@
   <div class="bg-photo"></div>
 
   <section id="loginScreen" class="login-card">
-    <img class="admin-logo" src="assets/logo-podsesi.png" alt="PODSESI" onerror="this.onerror=null;this.src='logo-podsesi.png';" />
+    <img class="admin-logo" src="logo-podsesi.png" alt="PODSESI" />
     <h1>Painel PODSESI</h1>
     <p>Gerencie os episódios do PODSESI.</p>
     <input id="passwordInput" type="password" placeholder="Senha do administrador" />
@@ -21,7 +21,7 @@
     <header class="admin-header">
       <div>
         <h1>Painel Administrativo</h1>
-        <p>Cadastre, envie e exclua episódios do PODSESI.</p>
+        <p>Cadastre e exclua episódios. Os arquivos MP3 e capas ficam no GitHub.</p>
       </div>
       <div class="header-actions">
         <a href="index.html">Ver tela dos alunos</a>
@@ -32,12 +32,37 @@
     <section class="admin-grid single-admin-grid">
       <div class="admin-card">
         <h2>Novo episódio</h2>
+        <p class="admin-help-text">
+          Antes de salvar, envie o MP3 para a pasta <strong>audios/</strong> e a capa para <strong>capas/</strong> no GitHub.
+          Depois informe somente o nome do arquivo, exemplo: <strong>dani-professora.mp3</strong>.
+        </p>
+
         <form id="episodeForm" class="episode-form">
-          <label>Título<input id="title" required placeholder="Nome do episódio" /></label>
-          <label>Descrição<textarea id="description" rows="3" placeholder="Resumo do áudio"></textarea></label>
-          <label>Capa do episódio<input id="coverFile" type="file" accept="image/*" /></label>
-          <label>Arquivo MP3/Áudio<input id="audioFile" type="file" accept="audio/*" required /></label>
-          <button id="saveEpisodeBtn" type="submit">Enviar episódio</button>
+          <label>Título
+            <input id="title" required placeholder="Nome do episódio" />
+          </label>
+
+          <label>Descrição
+            <textarea id="description" rows="3" placeholder="Resumo do áudio"></textarea>
+          </label>
+
+          <label>Nome do arquivo MP3 em audios/
+            <input id="audioName" required placeholder="ex: dani-professora.mp3" />
+          </label>
+
+          <label>Selecionar MP3 apenas para preencher o nome automaticamente
+            <input id="audioFile" type="file" accept="audio/*" />
+          </label>
+
+          <label>Nome da capa em capas/
+            <input id="coverName" placeholder="ex: dani-professora.jpg ou .png" />
+          </label>
+
+          <label>Selecionar capa apenas para preencher o nome automaticamente
+            <input id="coverFile" type="file" accept="image/*" />
+          </label>
+
+          <button id="saveEpisodeBtn" type="submit">Salvar episódio</button>
           <div id="uploadStatus" class="upload-status"></div>
         </form>
       </div>

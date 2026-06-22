@@ -1,12 +1,6 @@
-Cole em Firebase > Storage > Regras e clique em Publicar:
+NÃO USAR.
 
-rules_version = '2';
+Esta versão não usa Firebase Storage, pois o plano gratuito Spark do Firebase não liberou Storage no seu projeto.
 
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read: if true;
-      allow write: if true;
-    }
-  }
-}
+Os MP3 devem ser enviados para a pasta audios/ no GitHub.
+As capas devem ser enviadas para a pasta capas/ no GitHub.

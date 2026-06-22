@@ -1,35 +1,30 @@
-PODSESI - PASSO A PASSO
+PODSESI - Versão gratuita sem Firebase Storage
 
-1) Suba todos os arquivos no GitHub.
+1) Publique estes arquivos no GitHub Pages.
 
-2) Ative o GitHub Pages:
-Settings > Pages > Deploy from branch > main > /root
+2) No Firebase, use somente o Firestore.
+   Vá em Firestore > Regras e cole o conteúdo de REGRAS-FIRESTORE.txt.
 
-3) Firebase já configurado em firebase-config.js com:
-Projeto: podsesi2026
-Storage bucket: podsesi2026.firebasestorage.app
+3) Para adicionar um episódio:
+   - Envie o MP3 para a pasta audios/ no GitHub.
+     Exemplo: audios/dani-professora.mp3
 
-4) Firestore:
-Firebase Console > Firestore Database > Regras
-Cole o conteúdo do arquivo REGRAS-FIRESTORE.txt
+   - Envie a capa para a pasta capas/ no GitHub.
+     Exemplo: capas/dani-professora.jpg
 
-5) Storage:
-Firebase Console > Storage > Regras
-Cole o conteúdo do arquivo REGRAS-STORAGE.txt
+   - Acesse admin.html.
+   - Digite título, descrição, nome do MP3 e nome da capa.
+   - Clique em Salvar episódio.
 
-6) Tela dos alunos:
-Abra index.html pelo link do GitHub Pages.
-A tela possui apenas campo de busca e lista de episódios.
-Os episódios aparecem em ordem de cadastro, do mais recente para o mais antigo.
+4) Importante:
+   No campo do áudio, escreva somente o nome do arquivo, por exemplo:
+   dani-professora.mp3
 
-7) Painel administrativo:
-Abra admin.html pelo link do GitHub Pages.
-Senha padrão: podsesi2026
+   No campo da capa, escreva somente o nome do arquivo, por exemplo:
+   dani-professora.jpg
 
-8) No painel você pode:
-- cadastrar episódio;
-- enviar capa;
-- enviar MP3/áudio;
-- excluir episódio.
+5) Senha padrão do admin:
+   podsesi2026
 
-As categorias foram removidas desta versão.
+6) Esta versão NÃO usa Storage.
+   Não é necessário fazer upgrade do Firebase.
